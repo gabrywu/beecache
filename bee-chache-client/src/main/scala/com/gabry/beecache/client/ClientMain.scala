@@ -10,7 +10,8 @@ object ClientMain {
     val config = ConfigFactory.load()
     val client = new BeeCacheClient(config)
     client.initialize()
-    client.get("123").foreach(println)
+    val one = client.get("123")
+    println(s"one=$one")
     client.destroy()
   }
 }

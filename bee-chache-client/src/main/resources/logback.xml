@@ -21,7 +21,7 @@
     <logger name="akka.cluster.metrics" level="INFO"/>
     <logger name="akka.remote.transport" level="INFO"/>
     <logger name="akka.serialization.Serialization" level="WARN"/>
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>

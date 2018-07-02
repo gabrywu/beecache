@@ -30,8 +30,8 @@ object BeeCacheActor{
 class BeeCacheActor(entityTypeName:String) extends PersistentActor with ActorLogging{
   import akka.cluster.sharding.ShardRegion.Passivate
   val config: Config = context.system.settings.config
-  val defaultTimeoutInMillis: Long = config.getDuration("app.entity-default-timeout").toMillis.max(BeeCacheActor.defaultMaxTimeoutInMillis)
-  val snapshotMaxMessage:Int = config.getInt("app.snapshot-max-message")
+  val defaultTimeoutInMillis: Long = config.getDuration("server.entity-default-timeout").toMillis.max(BeeCacheActor.defaultMaxTimeoutInMillis)
+  val snapshotMaxMessage:Int = config.getInt("server.snapshot-max-message")
   val defaultEntityData = BeeCacheData(self.path.name,None,defaultTimeoutInMillis)
   var entityData:BeeCacheData = defaultEntityData
   var cancelableTimeout:Cancellable = Cancellable.alreadyCancelled

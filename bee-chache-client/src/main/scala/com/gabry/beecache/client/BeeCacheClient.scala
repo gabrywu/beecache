@@ -4,11 +4,12 @@ import java.util.Optional
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{ActorRef, ActorSystem}
-import akka.cluster.sharding.ClusterSharding
+import akka.cluster.Cluster
+import akka.cluster.sharding.{ClusterSharding, ShardRegion}
 import akka.pattern._
 import akka.util.Timeout
 import com.gabry.beecache.core.extractor.BeeCacheMessageExtractor
-import com.gabry.beecache.protocol.BeeCacheData
+import com.gabry.beecache.protocol.{BeeCacheData, EntityMessage}
 import com.gabry.beecache.protocol.command.EntityCommand
 import com.gabry.beecache.protocol.constant.Constants
 import com.gabry.beecache.protocol.event.EntityEvent
@@ -28,6 +29,12 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
   private var system:ActorSystem = _
   private var beeCacheRegion:ActorRef = _
   private val numberOfShards = config.getInt("server.number-of-shards")
+  private def idExtractor:ShardRegion.ExtractEntityId = {
+    case msg:EntityMessage =>(msg.key,msg)
+  }
+  private def shardIdExtractor:ShardRegion.ExtractShardId = {
+    case msg:EntityMessage => (msg.key.hashCode % 100).toString
+  }
   /**
     * 链接server
     */
@@ -36,7 +43,7 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
       system = ActorSystem(clusterName, config)
     beeCacheRegion = ClusterSharding(system).startProxy(
       typeName = Constants.ENTITY_TYPE_NAME
-      ,role = Optional.of("proxy")
+      ,role = Optional.of("server")
       ,messageExtractor = BeeCacheMessageExtractor(numberOfShards))
 
   }
@@ -45,22 +52,21 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
     * 断开server链接
     */
   override def destroy(): Unit = {
+    val cluster = Cluster(system)
+    cluster.leave(cluster.selfAddress)
     system.stop(beeCacheRegion)
     system.terminate()
   }
 
   override def get(key: String): Try[BeeCacheData] = Try{
-    Await.result(beeCacheRegion ? EntityCommand.Get(key),defaultTimeout.duration) match {
-      case Success(data:BeeCacheData) => data
-      case otherResult => throw UnknownBeeCacheException(s"Get unknown result for get key[$key]: $otherResult")
-    }
+    Await.result(beeCacheRegion ? EntityCommand.Get(key),defaultTimeout.duration).asInstanceOf[BeeCacheData]
   }
 
 
   override def set(data: BeeCacheData): Try[Boolean] = Try{
     Await.result(beeCacheRegion ? EntityCommand.Set(data.key,data.value,data.expireTime),defaultTimeout.duration) match {
-      case Success(_:EntityEvent.Updated) => true
-      case Success(exception:BeeCacheException) => throw exception
+      case _:EntityEvent.Updated => true
+      case exception:BeeCacheException => throw exception
       case otherResult => throw UnknownBeeCacheException(s"Get unknown result for set key[$data]: $otherResult")
     }
   }
@@ -68,8 +74,8 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
 
   override def setExpire(key: String, expireTime: Long): Try[Boolean] = Try{
     Await.result(beeCacheRegion ? EntityCommand.SetExpire(key,expireTime),defaultTimeout.duration) match {
-      case Success(_:EntityEvent.Updated) => true
-      case Success(exception:BeeCacheException) => throw exception
+      case _:EntityEvent.Updated => true
+      case exception:BeeCacheException => throw exception
       case otherResult => throw UnknownBeeCacheException(s"Get unknown result for set key expire [$key]: $otherResult")
     }
   }
@@ -77,16 +83,16 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
 
   override def delete(key: String): Try[Boolean] = Try{
     Await.result(beeCacheRegion ? EntityCommand.Delete(key),defaultTimeout.duration) match {
-      case Success(_:EntityEvent.Deleted) => true
-      case Success(exception:BeeCacheException) => throw exception
+      case _:EntityEvent.Deleted => true
+      case exception:BeeCacheException => throw exception
       case otherResult => throw UnknownBeeCacheException(s"Get unknown result for delete key[$key]: $otherResult")
     }
   }
 
   override def select(key: String): Try[BeeCacheData] = Try{
     Await.result(beeCacheRegion ? EntityCommand.Select(key),defaultTimeout.duration) match {
-      case Success(data:BeeCacheData) => data
-      case Success(exception:BeeCacheException) => throw exception
+      case data:BeeCacheData => data
+      case exception:BeeCacheException => throw exception
       case otherResult => throw UnknownBeeCacheException(s"Get unknown result for select key[$key]: $otherResult")
     }
   }
