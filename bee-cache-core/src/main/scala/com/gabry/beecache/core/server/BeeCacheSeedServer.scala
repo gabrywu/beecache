@@ -1,6 +1,6 @@
 package com.gabry.beecache.core.server
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorPath, ActorSystem, Address}
 import akka.cluster.Cluster
 import com.gabry.beecache.core.Node
 import com.gabry.beecache.core.registry.RegistryFactory
@@ -18,27 +18,30 @@ object BeeCacheSeedServer {
 
     val seeds = try{
         registry.connect()
-        registry.getNodesByType("seed").map(node=>"\""+node.anchor +"\"")
+        registry.getNodesByType("seed").map(node=>ActorPath.fromString(node.anchor).address).toList
       }catch {
         case exception:Exception =>
-          log.error("cannot connect to registry",exception)
-          Array.empty[String]
+          log.error("Cannot connect to registry",exception)
+          List.empty[Address]
       }
 
-    log.info(s"find seed node: ${seeds.mkString(",")}")
-    val config = if( seeds.nonEmpty )
-      defaultConfig.getConfig("seed")
-        .withFallback(ConfigFactory.parseString(s"akka.cluster.seed-nodes=[${seeds.mkString(",")}]"))
+    log.info(s"Find seed node: ${seeds.mkString(",")}")
+
+    val config = defaultConfig.getConfig("seed")
+        .withFallback(ConfigFactory.parseString(s"akka.cluster.seed-nodes=[]"))
         .withFallback(ConfigFactory.load())
-    else
-      defaultConfig.getConfig("seed").withFallback(ConfigFactory.load())
 
     val clusterName = config.getString("clusterNode.cluster-name")
     val system = ActorSystem(clusterName, config)
     val cluster = Cluster(system)
-    cluster.join(cluster.selfAddress)
+    if(seeds.nonEmpty){
+      cluster.joinSeedNodes(seeds)
+    }else{
+      log.warn("Current cluster is empty ,now join self")
+      cluster.join(cluster.selfAddress)
+    }
     val seedNode = Node("seed",cluster.selfAddress.toString)
-    log.info(s"registry node $seedNode")
+    log.info(s"Registry current seed node $seedNode")
     registry.registerNode(seedNode)
 
     system.registerOnTermination{
