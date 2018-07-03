@@ -28,7 +28,7 @@ object ZookeeperRegistry{
   * Created by gabry on 2018/4/17 9:56
   * Zookeeper注册中心类
   */
-class ZookeeperRegistry(val registryType:String,config:Config) extends AbstractRegistry(registryType,config) {
+class ZookeeperRegistry(config:Config) extends AbstractRegistry(config) {
   import com.gabry.beecache.utils.ExternalClassHelper._
   private val hosts:String = config.getStringOr(ZookeeperRegistry.KEY_HOST,"localhost:2181")
   private val baseSleepTimeMs:Int = config.getIntOr(ZookeeperRegistry.KEY_BASE_SLEEP_TIME_MS,1000)
@@ -163,4 +163,11 @@ class ZookeeperRegistry(val registryType:String,config:Config) extends AbstractR
   override def disConnect(): Unit = {
     zkClient.close()
   }
+
+  /**
+    * 获取当前注册中心的类型
+    *
+    * @return 注册中心的类型
+    */
+  override def registryType: String = "zookeeper"
 }

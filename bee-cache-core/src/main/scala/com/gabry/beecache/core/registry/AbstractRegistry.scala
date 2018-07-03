@@ -7,6 +7,6 @@ import com.typesafe.config.Config
   * 节点注册接口抽象类。
   * 设定构造函数的形式
   */
-abstract class AbstractRegistry(registryType:String,config:Config) extends Registry {
+abstract class AbstractRegistry(config:Config) extends Registry {
 
 }

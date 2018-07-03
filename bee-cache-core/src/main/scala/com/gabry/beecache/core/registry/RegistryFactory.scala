@@ -20,9 +20,10 @@ object RegistryFactory {
       val registryConfig = config.getConfig(s"registry.$registryType")
       registryType.toLowerCase() match {
           case "zookeeper" =>
-            new ZookeeperRegistry(registryType,registryConfig)
+            new ZookeeperRegistry(registryConfig)
           case otherType =>
             throw new IllegalArgumentException(s"unsupported registry type $otherType")
       }
   }
+  def getRegistryOrDefault(config:Config):AbstractRegistry = getRegistry(config).getOrElse(DefaultRegistry(config))
 }
