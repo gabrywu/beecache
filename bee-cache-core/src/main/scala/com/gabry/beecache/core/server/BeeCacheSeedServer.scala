@@ -25,8 +25,6 @@ object BeeCacheSeedServer {
           List.empty[Address]
       }
 
-    log.info(s"Find seed node: ${seeds.mkString(",")}")
-
     val config = defaultConfig.getConfig("seed")
         .withFallback(ConfigFactory.parseString(s"akka.cluster.seed-nodes=[]"))
         .withFallback(ConfigFactory.load())
@@ -35,6 +33,7 @@ object BeeCacheSeedServer {
     val system = ActorSystem(clusterName, config)
     val cluster = Cluster(system)
     if(seeds.nonEmpty){
+      log.info(s"Current cluster seed node: ${seeds.mkString(",")}")
       cluster.joinSeedNodes(seeds)
     }else{
       log.warn("Current cluster is empty ,now join self")

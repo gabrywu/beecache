@@ -3,11 +3,12 @@ package com.gabry.beecache.client
 import java.util.Optional
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{ActorPath, ActorRef, ActorSystem}
+import akka.actor.{ActorPath, ActorRef, ActorSystem, Props}
 import akka.cluster.Cluster
 import akka.cluster.sharding.ClusterSharding
 import akka.pattern._
 import akka.util.Timeout
+import com.gabry.beecache.client.actor.BeeCacheClientActor
 import com.gabry.beecache.core.extractor.BeeCacheMessageExtractor
 import com.gabry.beecache.core.registry.RegistryFactory
 import com.gabry.beecache.protocol.BeeCacheData
@@ -109,5 +110,10 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
       case otherResult => throw UnknownBeeCacheException(s"Get unknown result for select key[$key]: $otherResult")
     }
   }
-
+  def benchMark(parallel:Int):Unit = {
+    val clientActor = 0 until parallel map{ i =>
+      system.actorOf(Props.create(classOf[BeeCacheClientActor],beeCacheRegion),s"clientActor$i")
+    }
+    clientActor.foreach(_ ! "start")
+  }
 }

@@ -12,7 +12,7 @@
   <modules>
     <module>bee-cache-core</module>
     <module>bee-cache-utils</module>
-      <module>bee-chache-client</module>
+    <module>bee-chache-client</module>
     <module>bee-cache-protocol</module>
   </modules>
 
