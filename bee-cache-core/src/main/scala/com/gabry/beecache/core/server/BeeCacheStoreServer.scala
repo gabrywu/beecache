@@ -3,8 +3,7 @@ package com.gabry.beecache.core.server
 import akka.actor.{ActorPath, ActorSystem, Props}
 import akka.cluster.Cluster
 import akka.persistence.journal.leveldb.{SharedLeveldbJournal, SharedLeveldbStore}
-import com.gabry.beecache.core.Node
-import com.gabry.beecache.core.registry.RegistryFactory
+import com.gabry.beecache.core.registry.{Node, RegistryFactory}
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 

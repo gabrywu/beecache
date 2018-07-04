@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="Maven 1" modules="bee-chache-client,bee-cache-client,bee-cache-protocol,bee-cache-utils,bee-cache-core">
+    <profile name="Maven 1" modules="bee-cache-client,bee-cache-core,bee-cache-protocol,bee-chache-client,bee-cache-utils">
       <parameters>
         <parameter value="-target:jvm-1.8" />
       </parameters>

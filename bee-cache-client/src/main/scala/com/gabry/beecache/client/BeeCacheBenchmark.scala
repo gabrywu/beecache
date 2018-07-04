@@ -27,7 +27,7 @@ object BeeCacheBenchmark {
     val end = System.currentTimeMillis()
     println(s"get $getNumbers kv ,time is: ${end-start} 毫秒")
     client.get("123")
-    client.benchMark(10)
+    client.benchMark(1)
     Thread.sleep(100*1000)
     client.destroy()
   }

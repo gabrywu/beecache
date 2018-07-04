@@ -6,10 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="bee-cache-client" />
         <module name="bee-cache-core" />
         <module name="bee-cache-protocol" />
         <module name="bee-cache-utils" />
-        <module name="bee-chache-client" />
       </profile>
     </annotationProcessing>
   </component>

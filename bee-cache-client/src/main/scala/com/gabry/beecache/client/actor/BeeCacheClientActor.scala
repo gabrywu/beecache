@@ -8,7 +8,7 @@ import com.gabry.beecache.protocol.command.EntityCommand
   * Created by gabry on 2018/7/3 14:41
   */
 class BeeCacheClientActor(regionProxy:ActorRef) extends Actor with ActorLogging{
-  private val msgNumber = 1*10000
+  private val msgNumber = 1*1000
   private var counter = 0
   private var start:Long = 0
   private var end:Long = 0

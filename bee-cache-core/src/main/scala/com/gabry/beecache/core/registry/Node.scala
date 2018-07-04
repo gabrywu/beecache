@@ -1,4 +1,4 @@
-package com.gabry.beecache.core
+package com.gabry.beecache.core.registry
 
 /**
   * Created by gabry on 2018/6/29 15:19

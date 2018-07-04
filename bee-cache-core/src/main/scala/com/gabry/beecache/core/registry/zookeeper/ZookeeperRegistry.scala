@@ -2,8 +2,7 @@ package com.gabry.beecache.core.registry.zookeeper
 
 import java.util.concurrent.TimeUnit
 
-import com.gabry.beecache.core.Node
-import com.gabry.beecache.core.registry.AbstractRegistry
+import com.gabry.beecache.core.registry.{AbstractRegistry, Node}
 import com.typesafe.config.Config
 import org.apache.curator.framework.imps.CuratorFrameworkState
 import org.apache.curator.framework.{CuratorFramework, CuratorFrameworkFactory}

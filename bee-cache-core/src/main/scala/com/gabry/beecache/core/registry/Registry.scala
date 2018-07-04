@@ -1,7 +1,5 @@
 package com.gabry.beecache.core.registry
 
-import com.gabry.beecache.core.Node
-
 /**
   * Created by gabry on 2018/4/17 9:43
   * 节点注册接口

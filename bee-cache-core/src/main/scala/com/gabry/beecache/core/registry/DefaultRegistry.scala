@@ -1,6 +1,5 @@
 package com.gabry.beecache.core.registry
 
-import com.gabry.beecache.core.Node
 import com.typesafe.config.Config
 
 /**
