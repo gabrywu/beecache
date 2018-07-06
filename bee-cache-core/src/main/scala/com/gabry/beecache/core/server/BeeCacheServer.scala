@@ -27,6 +27,7 @@ object BeeCacheServer {
     val port = args.headOption.map(_.toInt).getOrElse(0)
 
     val defaultConfig = ConfigFactory.load()
+
     val registry = RegistryFactory.getRegistryOrDefault(defaultConfig)
     try{
       registry.connect()
@@ -37,7 +38,7 @@ object BeeCacheServer {
           .withFallback(defaultConfig.getConfig("server"))
           .withFallback(ConfigFactory.parseString(s"akka.cluster.seed-nodes=[]"))
           .withFallback(defaultConfig)
-
+        println(s"config=$config")
         val clusterName = config.getString("clusterNode.cluster-name")
         val system = ActorSystem(clusterName, config)
         val cluster = Cluster(system)
