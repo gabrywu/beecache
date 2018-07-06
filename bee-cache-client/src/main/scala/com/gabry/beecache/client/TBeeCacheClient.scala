@@ -10,6 +10,7 @@ import scala.util.Try
 trait TBeeCacheDataOperator{
   def get(key:String):Try[BeeCacheData]
   def set(data:BeeCacheData):Try[Boolean]
+  def set(key:String, value:Option[Any], expireTime:Long):Try[Boolean]
   def setExpire(key:String,expireTime:Long):Try[Boolean]
   def delete(key:String):Try[Boolean]
   def select(key:String):Try[BeeCacheData]

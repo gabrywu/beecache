@@ -3,12 +3,11 @@ package com.gabry.beecache.client
 import java.util.Optional
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{ActorPath, ActorRef, ActorSystem, Props}
+import akka.actor.{ActorPath, ActorRef, ActorSystem}
 import akka.cluster.Cluster
 import akka.cluster.sharding.ClusterSharding
 import akka.pattern._
 import akka.util.Timeout
-import com.gabry.beecache.client.actor.BeeCacheClientActor
 import com.gabry.beecache.core.extractor.BeeCacheMessageExtractor
 import com.gabry.beecache.core.registry.RegistryFactory
 import com.gabry.beecache.protocol.BeeCacheData
@@ -76,6 +75,8 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
     Await.result(beeCacheRegion ? EntityCommand.Get(key),defaultTimeout.duration).asInstanceOf[BeeCacheData]
   }
 
+  override def set(key: String, value: Option[Any], expireTime: Long): Try[Boolean] = set(BeeCacheData(key,value,expireTime))
+
 
   override def set(data: BeeCacheData): Try[Boolean] = Try{
     Await.result(beeCacheRegion ? EntityCommand.Set(data.key,data.value,data.expireTime),defaultTimeout.duration) match {
@@ -85,7 +86,6 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
     }
   }
 
-
   override def setExpire(key: String, expireTime: Long): Try[Boolean] = Try{
     Await.result(beeCacheRegion ? EntityCommand.SetExpire(key,expireTime),defaultTimeout.duration) match {
       case _:EntityEvent.Updated => true
@@ -93,7 +93,6 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
       case otherResult => throw UnknownBeeCacheException(s"Get unknown result for set key expire [$key]: $otherResult")
     }
   }
-
 
   override def delete(key: String): Try[Boolean] = Try{
     Await.result(beeCacheRegion ? EntityCommand.Delete(key),defaultTimeout.duration) match {
@@ -110,10 +109,5 @@ class BeeCacheClient(config:Config) extends AbstractBeeCacheClient(config) {
       case otherResult => throw UnknownBeeCacheException(s"Get unknown result for select key[$key]: $otherResult")
     }
   }
-  def benchMark(parallel:Int):Unit = {
-    val clientActor = 0 until parallel map{ i =>
-      system.actorOf(Props.create(classOf[BeeCacheClientActor],beeCacheRegion),s"clientActor$i")
-    }
-    clientActor.foreach(_ ! "start")
-  }
+
 }

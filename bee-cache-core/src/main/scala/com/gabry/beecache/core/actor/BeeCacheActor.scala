@@ -60,11 +60,11 @@ class BeeCacheActor(entityTypeName:String) extends PersistentActor with ActorLog
   def updateState(updateCommand:EntityCommand):Unit = {
     updateCommand match {
         case cmd: EntityCommand.Set =>
-          entityData = entityData.copy(value = Some(cmd.value), expireTime = cmd.expireTime)
+          entityData = entityData.copy(value = Some(cmd.value), expireTime = cmd.expireTime,versionNo = lastSequenceNr)
           cancelableTimeout.cancel()
           cancelableTimeout = createCancelableTimeout(entityData.expireTime)
         case cmd: EntityCommand.SetExpire =>
-          entityData = entityData.copy(expireTime = cmd.expireTime)
+          entityData = entityData.copy(expireTime = cmd.expireTime,versionNo = lastSequenceNr)
           cancelableTimeout.cancel()
           cancelableTimeout = createCancelableTimeout(entityData.expireTime)
         case _: EntityCommand.Delete =>
