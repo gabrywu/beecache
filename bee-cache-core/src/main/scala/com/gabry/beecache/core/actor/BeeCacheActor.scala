@@ -112,7 +112,7 @@ class BeeCacheActor(entityTypeName:String) extends PersistentActor with ActorLog
       self ! BeeCacheActor.ExpireTimeReached(entityData.expireTime)
       from ! EntityEvent.Deleted(key)
     case _:EntityCommand.Get =>
-      sender() ! entityData
+      sender() ! entityData.copy(value = Some(entityData.key))
     case _:EntityCommand.Select if entityData.value.nonEmpty =>
       sender() ! entityData
     case EntityCommand.Select(key) if entityData.value.isEmpty =>

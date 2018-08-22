@@ -2,11 +2,20 @@ package com.gabry.beecache.client
 
 import com.gabry.beecache.protocol.BeeCacheData
 
+import scala.concurrent.Future
 import scala.util.Try
 
 /**
   * Created by gabry on 2018/7/2 10:37
   */
+trait TBeeCacheDataAsyncOperator{
+  def asyncGet(key:String):Future[BeeCacheData]
+  def asyncSet(data:BeeCacheData):Future[Boolean]
+  def asyncSet(key:String, value:Option[Any], expireTime:Long):Future[Boolean]
+  def asyncSetExpire(key:String,expireTime:Long):Future[Boolean]
+  def asyncDelete(key:String):Future[Boolean]
+  def asyncSelect(key:String):Future[BeeCacheData]
+}
 trait TBeeCacheDataOperator{
   def get(key:String):Try[BeeCacheData]
   def set(data:BeeCacheData):Try[Boolean]
