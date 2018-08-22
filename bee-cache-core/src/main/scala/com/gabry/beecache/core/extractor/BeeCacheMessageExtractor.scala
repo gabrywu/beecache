@@ -5,6 +5,7 @@ import com.gabry.beecache.protocol.command.EntityCommand
 
 /**
   * Created by gabry on 2018/6/29 13:22
+  * 提取实体ID、计算shardId的类
   */
 case class BeeCacheMessageExtractor(maxNumberOfShards: Int) extends HashCodeMessageExtractor(maxNumberOfShards){
   /**

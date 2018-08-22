@@ -8,11 +8,11 @@ import akka.cluster.Cluster
 import akka.cluster.sharding.ClusterSharding
 import akka.pattern._
 import akka.util.Timeout
+import com.gabry.beecache.core.constant.Constants
 import com.gabry.beecache.core.extractor.BeeCacheMessageExtractor
 import com.gabry.beecache.core.registry.RegistryFactory
 import com.gabry.beecache.protocol.BeeCacheData
 import com.gabry.beecache.protocol.command.EntityCommand
-import com.gabry.beecache.protocol.constant.Constants
 import com.gabry.beecache.protocol.event.EntityEvent
 import com.gabry.beecache.protocol.exception.{BeeCacheException, UnknownBeeCacheException}
 import com.typesafe.config.Config

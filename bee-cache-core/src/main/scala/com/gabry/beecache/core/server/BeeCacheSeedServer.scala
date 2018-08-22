@@ -2,12 +2,14 @@ package com.gabry.beecache.core.server
 
 import akka.actor.{ActorPath, ActorSystem, Address}
 import akka.cluster.Cluster
+import com.gabry.beecache.core.constant.Constants
 import com.gabry.beecache.core.registry.{Node, RegistryFactory}
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
 /**
   * Created by gabry on 2018/7/2 16:48
+  * 启动集群种子节点
   */
 object BeeCacheSeedServer {
   private val log = LoggerFactory.getLogger(BeeCacheSeedServer.getClass)
@@ -17,18 +19,18 @@ object BeeCacheSeedServer {
 
     val seeds = try{
         registry.connect()
-        registry.getNodesByType("seed").map(node=>ActorPath.fromString(node.anchor).address).toList
+        registry.getNodesByType(Constants.ROLE_SEED_NAME).map(node=>ActorPath.fromString(node.anchor).address).toList
       }catch {
         case exception:Exception =>
           log.error("Cannot connect to registry",exception)
           List.empty[Address]
       }
 
-    val config = defaultConfig.getConfig("seed")
+    val config = defaultConfig.getConfig(Constants.ROLE_SEED_NAME)
         .withFallback(ConfigFactory.parseString(s"akka.cluster.seed-nodes=[]"))
-        .withFallback(ConfigFactory.load())
+        .withFallback(defaultConfig)
 
-    val clusterName = config.getString("clusterNode.cluster-name")
+    val clusterName = config.getString(Constants.CLUSTER_NAME_PATH_OF_CONFIG)
     val system = ActorSystem(clusterName, config)
     val cluster = Cluster(system)
     if(seeds.nonEmpty){

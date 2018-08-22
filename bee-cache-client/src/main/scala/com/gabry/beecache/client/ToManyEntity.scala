@@ -14,9 +14,8 @@ object ToManyEntity {
     val startTime = System.nanoTime
     0 until entityNumPerShard foreach { idx =>
       //client.get(idx.toString)
-      client.asyncGet(idx.toString)
-      if(idx%1000==0)
-        Thread.sleep(50)
+      client.get(idx.toString)
+
     }
     val endTime = System.nanoTime
     Thread.sleep(100*1000)

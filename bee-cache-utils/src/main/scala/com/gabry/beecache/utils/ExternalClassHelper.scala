@@ -10,7 +10,9 @@ import com.typesafe.config._
   * 用于扩展现有类的功能集合
   */
 object ExternalClassHelper{
-
+  /**
+    * 提供java.time.Duration到scala.concurrent.duration.Duration的隐式转换
+    */
   implicit def javaDuration2FiniteDuration(duration:java.time.Duration):scala.concurrent.duration.Duration =
     scala.concurrent.duration.FiniteDuration(duration.toNanos,scala.concurrent.duration.NANOSECONDS)
 

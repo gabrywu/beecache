@@ -4,6 +4,7 @@ import com.gabry.beecache.protocol.EntityMessage
 
 /**
   * Created by gabry on 2018/6/28 18:04
+  * 与实体相关的命令。比如Get/Set/Delete/SetExpire/Select
   */
 sealed trait EntityCommand extends Command with EntityMessage
 

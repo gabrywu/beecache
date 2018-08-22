@@ -5,12 +5,10 @@ import java.util.Optional
 import akka.actor.{ActorPath, ActorSystem, Props}
 import akka.cluster.Cluster
 import akka.cluster.sharding.ClusterSharding
-import com.gabry.beecache.client.BeeCacheClient
+import com.gabry.beecache.core.constant.Constants
 import com.gabry.beecache.core.extractor.BeeCacheMessageExtractor
 import com.gabry.beecache.core.registry.RegistryFactory
-import com.gabry.beecache.protocol.BeeCacheData
 import com.gabry.beecache.protocol.command.EntityCommand
-import com.gabry.beecache.protocol.constant.Constants
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
