@@ -2,6 +2,7 @@ package com.gabry.beecache.core.server
 
 import akka.actor.{ActorPath, ActorSystem, Address}
 import akka.cluster.Cluster
+import com.gabry.beecache.core.actor.BeeCacheActor
 import com.gabry.beecache.core.constant.Constants
 import com.gabry.beecache.core.registry.{Node, RegistryFactory}
 import com.typesafe.config.ConfigFactory
